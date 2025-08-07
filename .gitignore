@@ -1,0 +1,45 @@
+.DS_Store
+
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+.idea
+*.iws
+*.iml
+*.ipr
+
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Visual Studio Code
+.vscode/launch.json
+.vscode/tasks.json
+
+# Node
+node_modules/
+bundle-stats.json
+
+# Jenv
+.java-version
+
+# Maven
+/target/
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+.env
+docker_data/
+
+# Config
+dev.properties

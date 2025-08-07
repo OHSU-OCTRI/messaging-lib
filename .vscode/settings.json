@@ -1,0 +1,26 @@
+{
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "vue"
+    ],
+    "prettier.requireConfig": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[java]": {
+        "editor.formatOnSave": true,
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": false,
+        "editor.tabSize": 4
+    },
+    "java.saveActions.organizeImports": true,
+    "java.format.settings.url": "settings/OCTRI_java_format.xml",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "disabled"
+}

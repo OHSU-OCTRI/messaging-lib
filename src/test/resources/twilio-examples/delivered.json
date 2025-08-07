@@ -1,0 +1,25 @@
+{
+  "body": "Hello Heath. This is Kellie from your research study team. Your 1 Week Followup survey is available to complete! Use the following link to access your survey: http://localhost:8080/open/client/1a378dc9-ea7c-48e2-a1b4-ed9abae13912 Please reach out by phone or text at 503-954-8758 or by email at openstudy@ohsu.edu if you have any questions! Thank you, Kellie",
+  "numSegments": "3",
+  "direction": "outbound-api",
+  "from": "+15557122661",
+  "to": "+15558675310",
+  "dateUpdated": "2025-05-11T20:02:14.000Z",
+  "price": "-0.02370",
+  "errorMessage": null,
+  "uri": "/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/SM46b08410f6fdd3e292cac5b5d87121d7.json",
+  "accountSid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "numMedia": "0",
+  "status": "delivered",
+  "messagingServiceSid": null,
+  "sid": "SM46b08410f6fdd3e292cac5b5d87121d7",
+  "dateSent": "2025-05-11T20:02:05.000Z",
+  "dateCreated": "2025-05-11T20:02:05.000Z",
+  "errorCode": null,
+  "priceUnit": "USD",
+  "apiVersion": "2010-04-01",
+  "subresourceUris": {
+    "feedback": "/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/SM46b08410f6fdd3e292cac5b5d87121d7/Feedback.json",
+    "media": "/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/SM46b08410f6fdd3e292cac5b5d87121d7/Media.json"
+  }
+}

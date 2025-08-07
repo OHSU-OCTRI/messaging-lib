@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        // Spring Boot support
+        "vmware.vscode-boot-dev-pack",
+        // Mustache syntax
+        "dawhite.mustache",
+        // Lint JavaScript and Vue files using ESLint
+        "dbaeumer.vscode-eslint",
+        // Formatter for JavaScript and Vue files
+        "esbenp.prettier-vscode",
+        // Vue single file component (SFC) support
+        "Vue.volar",
+        // Java language support
+        "vscjava.vscode-java-pack"
+    ]
+}

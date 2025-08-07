@@ -1,0 +1,166 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.octri.messaging</groupId>
+	<artifactId>messaging_lib</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>messaging_lib</name>
+	<description>OCTRI Messaging Library</description>
+	<url>https://github.com/OHSU-OCTRI/messaging-lib</url>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.4</version>
+		<relativePath />
+		<!-- lookup parent from repository -->
+	</parent>
+
+	<licenses>
+		<license>
+			<name>The 3-Clause BSD License</name>
+			<url>https://opensource.org/license/bsd-3-clause</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>OCTRI Innovation Core</name>
+			<email>octri-devops@ohsu.edu</email>
+			<organization>Oregon Clinical &amp; Translational Research Institute (OCTRI)</organization>
+			<organizationUrl>https://www.ohsu.edu/octri</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://github.com/OHSU-OCTRI/messaging-lib.git</connection>
+		<developerConnection>scm:git:https://github.com/OHSU-OCTRI/messaging-lib.git</developerConnection>
+		<url>https://github.com/OHSU-OCTRI/messaging-lib/tree/main</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>17</java.version>
+		<twilio.version>10.9.0</twilio.version>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/OHSU-OCTRI/messaging-lib</url>
+		</repository>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.twilio.sdk</groupId>
+			<artifactId>twilio</artifactId>
+			<version>${twilio.version}</version>
+		</dependency>
+		<!-- For string utilities -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Exclude Twilio dependency that causes a warning about multiple implementations of org.json.JSONObject -->
+					<classpathDependencyExcludes>
+						<classpathDependencyExclude>org.json:json</classpathDependencyExclude>
+					</classpathDependencyExcludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>ci</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>3.2.8</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>publish</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.8.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<deploymentName>AuthLib ${project.version}</deploymentName>
+							<autoPublish>true</autoPublish>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
