@@ -13,6 +13,3 @@ Initial release of code extracted from OPEN.
 
 - Add initial implementation extracted from OPEN. (CIS-3204)
 - Add Spring Boot auto-configuration. (CIS-3204)
-
-[Unreleased]: https://source.ohsu.edu/OCTRI-Apps/common-lib/compare/v0.1.0...HEAD
-[0.1.0]: https://source.ohsu.edu/OCTRI-Apps/common-lib/releases/tag/v0.1.0
