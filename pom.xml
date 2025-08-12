@@ -154,7 +154,7 @@
 						<extensions>true</extensions>
 						<configuration>
 							<publishingServerId>central</publishingServerId>
-							<deploymentName>AuthLib ${project.version}</deploymentName>
+							<deploymentName>${project.name} ${project.version}</deploymentName>
 							<autoPublish>true</autoPublish>
 						</configuration>
 					</plugin>
