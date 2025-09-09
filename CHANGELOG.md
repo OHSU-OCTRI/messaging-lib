@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- README documentation on configurable properties (CIS-3349)
+
 ### Fixed
 
 - Use project name to construct Maven Central deployment names. (#3)
