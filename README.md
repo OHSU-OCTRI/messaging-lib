@@ -36,6 +36,6 @@ Configure the following properties for your applications's use case:
 |octri.messaging.email-delivery-method|enum|LOG|Dictates how emails will be sent. Options are LOG (log without sending). NOOP (do nothing), and SMTP (send via SMTP)|
 |octri.messaging.sms-delivery-method|enum|LOG|Dictates how texts will be sent. Options are LOG (log without sending). NOOP (do nothing), and TWILIO (send via Twilio)|
 |octri.messaging.twilio.account-sid|string|None|The Twilio account sid. Only required if SMS delivery method is TWILIO|
-octri.messaging.twilio.auth-token|string|None|The Twilio OAuth token. Only required if SMS delivery method is TWILIO|
-octri.messaging.twilio.callback-url|string|None|The application callback url for getting status updates on a message delivery. This is optional.|
+|octri.messaging.twilio.auth-token|string|None|The Twilio OAuth token. Only required if SMS delivery method is TWILIO|
+|octri.messaging.twilio.callback-url|string|None|The application callback url for getting status updates on a message delivery. This is optional.|
 
