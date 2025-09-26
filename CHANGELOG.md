@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - README documentation on configurable properties (CIS-3349)
+- README documentation on SMTP and Twilio delivery strategies (AUTHLIB-162)
 
 ### Fixed
 
