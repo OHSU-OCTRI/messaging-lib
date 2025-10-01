@@ -54,6 +54,11 @@ public class MessagingProperties {
 	private boolean enabled = true;
 
 	/**
+	 * Properties to configure the email delivery strategy.
+	 */
+	private EmailProperties email;
+
+	/**
 	 * How email messages should be delivered. Defaults to sending messages to the log.
 	 */
 	private EmailDeliveryMethod emailDeliveryMethod = EmailDeliveryMethod.LOG;
@@ -85,6 +90,25 @@ public class MessagingProperties {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	/**
+	 * Gets the email configuration properties.
+	 * 
+	 * @return email configuration
+	 */
+	public EmailProperties getEmail() {
+		return email;
+	}
+
+	/**
+	 * Sets the email configuration properties.
+	 * 
+	 * @param email
+	 *            email configuration
+	 */
+	public void setEmail(EmailProperties email) {
+		this.email = email;
 	}
 
 	/**
