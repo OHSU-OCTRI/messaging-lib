@@ -49,7 +49,7 @@ jobs:
   publish:
     name: Publish to Maven Central
     needs: build-java-source
-    if: github.ref_type == 'tag'
+    if: github.ref == 'refs/heads/main' || github.ref_type == 'tag'
     runs-on: ubuntu-latest
     permissions:
       contents: read
