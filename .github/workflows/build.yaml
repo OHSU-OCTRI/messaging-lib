@@ -69,14 +69,7 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Get version from POM
-        id: get-version
-        run: |
-          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "version=$version" >> $GITHUB_ENV
-
       - name: Publish release to Maven Central
-        if: github.ref_type == 'tag' && !contains(env.version, '-SNAPSHOT')
         run: mvn deploy -DskipTests -Pci,publish
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
