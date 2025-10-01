@@ -34,6 +34,8 @@ Configure the following properties for your applications's use case:
 |---|---|---|---|
 |octri.messaging.enabled|boolean|TRUE|Whether the messaging library is enabled.|
 |octri.messaging.email-delivery-method|enum|LOG|Dictates how emails will be sent. Options are LOG (log without sending). NOOP (do nothing), and SMTP (send via SMTP)|
+|octri.messaging.email.default-sender-address|string|None|The default email address to use if the sender address is not specified.|
+|octri.messaging.email.subject-prefix|string|None|Optional prefix to add to the subject line of all email messages.|
 |octri.messaging.sms-delivery-method|enum|LOG|Dictates how texts will be sent. Options are LOG (log without sending). NOOP (do nothing), and TWILIO (send via Twilio)|
 |octri.messaging.twilio.account-sid|string|None|The Twilio account sid. Only required if SMS delivery method is TWILIO|
 |octri.messaging.twilio.auth-token|string|None|The Twilio OAuth token. Only required if SMS delivery method is TWILIO|

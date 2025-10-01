@@ -13,4 +13,9 @@ public class NoopEmailDeliveryStrategy implements EmailDeliveryStrategy {
 		return Optional.empty();
 	}
 
+	@Override
+	public Optional<String> sendEmail(String toEmail, String messageSubject, String messageText) {
+		return Optional.empty();
+	}
+
 }

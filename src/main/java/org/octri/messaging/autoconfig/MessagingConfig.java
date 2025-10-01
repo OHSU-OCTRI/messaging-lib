@@ -2,6 +2,7 @@ package org.octri.messaging.autoconfig;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.octri.messaging.email.EmailDeliveryStrategy;
 import org.octri.messaging.email.LoggingEmailDeliveryStrategy;
 import org.octri.messaging.email.NoopEmailDeliveryStrategy;
@@ -32,7 +33,7 @@ public class MessagingConfig {
 
 	private static final Logger log = LoggerFactory.getLogger(MessagingConfig.class);
 
-	private MessagingProperties messagingProperties;
+	private final MessagingProperties messagingProperties;
 
 	/**
 	 * Constructor.
@@ -42,6 +43,7 @@ public class MessagingConfig {
 	 */
 	public MessagingConfig(MessagingProperties messagingProperties) {
 		this.messagingProperties = messagingProperties;
+		this.validateProperties();
 	}
 
 	/**
@@ -74,12 +76,13 @@ public class MessagingConfig {
 	@ConditionalOnMissingBean
 	public EmailDeliveryStrategy emailDeliveryStrategy(Optional<JavaMailSender> javaMailSender) {
 		var emailDeliveryMethod = messagingProperties.getEmailDeliveryMethod();
+		var emailProperties = messagingProperties.getEmail();
 		log.debug("Creating email delivery strategy bean for delivery method " + emailDeliveryMethod);
 
 		EmailDeliveryStrategy deliveryStrategy = switch (emailDeliveryMethod) {
-			case LOG -> new LoggingEmailDeliveryStrategy();
+			case LOG -> new LoggingEmailDeliveryStrategy(emailProperties);
 			case NOOP -> new NoopEmailDeliveryStrategy();
-			case SMTP -> new SmtpEmailDeliveryStrategy(javaMailSender.get());
+			case SMTP -> new SmtpEmailDeliveryStrategy(javaMailSender.get(), emailProperties);
 			default -> throw new IllegalArgumentException("Invalid email delivery method " + emailDeliveryMethod);
 		};
 
@@ -133,6 +136,17 @@ public class MessagingConfig {
 		}
 
 		return new MessageDeliveryService(emailStrategy, smsStrategy);
+	}
+
+	/**
+	 * Validates that configuration properties are valid.
+	 */
+	private void validateProperties() {
+		var emailProperties = messagingProperties.getEmail();
+		if (StringUtils.isBlank(emailProperties.getDefaultSenderAddress())) {
+			log.warn("The octri.messaging.email.default-sender-address property is blank. "
+					+ "This will cause exceptions if you send messages without specifying a sender.");
+		}
 	}
 
 }
