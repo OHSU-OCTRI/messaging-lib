@@ -2,13 +2,12 @@ package org.octri.messaging.email;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.octri.messaging.autoconfig.EmailProperties;
 import org.octri.messaging.exception.UnsuccessfulDeliveryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-
-import io.micrometer.common.util.StringUtils;
 
 /**
  * Mock email delivery strategy for development environments that logs messages
