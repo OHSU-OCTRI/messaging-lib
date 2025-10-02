@@ -156,6 +156,7 @@
 							<publishingServerId>central</publishingServerId>
 							<deploymentName>${project.name} ${project.version}</deploymentName>
 							<autoPublish>true</autoPublish>
+							<centralSnapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</centralSnapshotsUrl>
 						</configuration>
 					</plugin>
 				</plugins>

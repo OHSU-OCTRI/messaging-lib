@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Publish -SNAPSHOT releases to Maven Central.
+- Publish -SNAPSHOT releases to Maven Central. (CIS-3368)
 
 ## [0.2.0] - 2025-10-01
 
