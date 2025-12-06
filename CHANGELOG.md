@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Publish -SNAPSHOT releases to Maven Central. (CIS-3368)
 
+### Fixed
+
+- Fix `NullPointerException` when none of the `octri.messaging.email.*` properties are configured. (CIS-3455)
+
 ## [0.2.0] - 2025-10-01
 
 ### Added

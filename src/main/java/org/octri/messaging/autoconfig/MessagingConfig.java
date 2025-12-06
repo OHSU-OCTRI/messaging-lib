@@ -143,7 +143,7 @@ public class MessagingConfig {
 	 */
 	private void validateProperties() {
 		var emailProperties = messagingProperties.getEmail();
-		if (StringUtils.isBlank(emailProperties.getDefaultSenderAddress())) {
+		if (emailProperties == null || StringUtils.isBlank(emailProperties.getDefaultSenderAddress())) {
 			log.warn("The octri.messaging.email.default-sender-address property is blank. "
 					+ "This will cause exceptions if you send messages without specifying a sender.");
 		}
