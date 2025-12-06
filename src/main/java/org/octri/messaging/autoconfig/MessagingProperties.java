@@ -56,7 +56,7 @@ public class MessagingProperties {
 	/**
 	 * Properties to configure the email delivery strategy.
 	 */
-	private EmailProperties email;
+	private EmailProperties email = new EmailProperties();
 
 	/**
 	 * How email messages should be delivered. Defaults to sending messages to the log.
@@ -94,7 +94,7 @@ public class MessagingProperties {
 
 	/**
 	 * Gets the email configuration properties.
-	 * 
+	 *
 	 * @return email configuration
 	 */
 	public EmailProperties getEmail() {
@@ -103,7 +103,7 @@ public class MessagingProperties {
 
 	/**
 	 * Sets the email configuration properties.
-	 * 
+	 *
 	 * @param email
 	 *            email configuration
 	 */
