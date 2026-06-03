@@ -63,7 +63,7 @@ jobs:
           release:prepare
 
     - name: Create GitHub release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         body: ${{ steps.update_changelog.outputs.release-notes }}
         draft: false
