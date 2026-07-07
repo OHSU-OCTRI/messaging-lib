@@ -15,71 +15,9 @@ on:
 jobs:
   prepare-release:
     name: Prepare release
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
-      packages: write
-
-    steps:
-    - name: Check out repository
-      uses: actions/checkout@v6
-
-    - name: Set up Java build environment
-      uses: actions/setup-java@v5
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-        cache: 'maven'
-
-    - name: Set up Git
-      run: |
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-
-    - name: Update CHANGELOG.md
-      id: update_changelog
-      uses: thomaseizinger/keep-a-changelog-new-release@3.1.0
-      with:
-        tag: v${{ inputs.version }}
-
-    - name: Commit CHANGELOG.md
-      run: |
-        git add CHANGELOG.md
-        git commit -m "Add version ${{ inputs.version }} to CHANGELOG.md"
-
-    - name: Prepare Maven release
-      run: |
-        mvn -B \
-          -Darguments=-DskipTests \
-          -DautoVersionSubmodules=true \
-          -DreleaseVersion=${{ inputs.version }} \
-          -DscmReleaseCommitComment="Release version ${{ inputs.version }}" \
-          -DdevelopmentVersion=${{ inputs.development_version }}-SNAPSHOT \
-          -DscmDevelopmentCommitComment="Next development version - ${{ inputs.development_version }}" \
-          -Dtag=v${{ inputs.version }} \
-          -Dusername=${{ github.actor }} \
-          -Dpassword=${{ secrets.GITHUB_TOKEN }} \
-          release:prepare
-
-    - name: Create GitHub release
-      uses: softprops/action-gh-release@v3
-      with:
-        body: ${{ steps.update_changelog.outputs.release-notes }}
-        draft: false
-        prerelease: false
-        name: ${{ inputs.version }}
-        tag_name: v${{ inputs.version }}
-        generate_release_notes: false
-
-    - name: Build release artifacts
-      run: |
-        gh workflow run build.yaml --ref v${{ inputs.version }}
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Build snapshot artifacts
-      run: |
-        gh workflow run build.yaml --ref main
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: OHSU-OCTRI/shared-workflows/.github/workflows/java-release.yaml@main
+    with:
+      version: ${{ inputs.version }}
+      development_version: ${{ inputs.development_version }}
+      java_version: '17'
+    secrets: inherit
