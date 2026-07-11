@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use shared GitHub Actions workflows (CIS-3773)
 - Create a test build workflow to handle PRs (CIS-3773)
+- Bumps com.twilio.sdk:twilio from 11.3.4 to 12.1.1
 
 ## [0.2.2] - 2026-06-11
 
