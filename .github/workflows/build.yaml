@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'spring-boot-4'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +13,6 @@ jobs:
     uses: OHSU-OCTRI/shared-workflows/.github/workflows/java-build.yaml@main
     with:
       java_version: '17'
-      publish_to_github_packages: ${{ github.ref == 'refs/heads/main' || github.ref_type == 'tag' }}
-      publish_to_maven_central: ${{ github.ref == 'refs/heads/main' || github.ref_type == 'tag' }}
+      publish_to_github_packages: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/spring-boot-4' || github.ref_type == 'tag' }}
+      publish_to_maven_central: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/spring-boot-4' || github.ref_type == 'tag' }}
     secrets: inherit
