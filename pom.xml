@@ -74,6 +74,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Jackson 3, as used by consuming Spring Boot applications. Twilio still uses Jackson 2. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jackson</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.twilio.sdk</groupId>
 			<artifactId>twilio</artifactId>
@@ -122,24 +128,6 @@
 					</classpathDependencyExcludes>
 				</configuration>
 			</plugin>
-      <plugin>
-        <groupId>org.openrewrite.maven</groupId>
-        <artifactId>rewrite-maven-plugin</artifactId>
-        <version>6.45.0</version>
-        <configuration>
-          <exportDatatables>true</exportDatatables>
-          <activeRecipes>
-            <recipe>org.openrewrite.java.spring.boot4.UpgradeSpringBoot_4_0</recipe>
-          </activeRecipes>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.openrewrite.recipe</groupId>
-            <artifactId>rewrite-spring</artifactId>
-            <version>6.36.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
 		</plugins>
 	</build>
 

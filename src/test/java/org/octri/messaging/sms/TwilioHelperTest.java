@@ -36,6 +36,8 @@ import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.rest.api.v2010.account.MessageFetcher;
 import com.twilio.type.PhoneNumber;
 
+import tools.jackson.databind.json.JsonMapper;
+
 public class TwilioHelperTest {
 
 	public static final Logger log = LoggerFactory.getLogger(TwilioHelperTest.class);
@@ -172,6 +174,32 @@ public class TwilioHelperTest {
 		assertTrue(fromNode.isObject(), "From number should be serialized as an object, but was: " + fromNode);
 		assertEquals(queuedMessage.getFrom().getEndpoint(), fromNode.get("endpoint").asText(),
 				"From number object should contain the phone number in the endpoint field");
+	}
+
+	/**
+	 * Spring Boot 4 applications read JSON with Jackson 3. This documents the format they will see when reading the
+	 * JSON produced by the helper's Jackson 2 object mapper (e.g. the API response returned by
+	 * {@link TwilioSmsDeliveryStrategy}).
+	 */
+	@Test
+	public void testSerializedJsonFormatAsReadByJackson3() throws Exception {
+		var json = twilioHelper.serializeMessageToJson(failedMessage);
+		var tree = JsonMapper.builder().build().readTree(json);
+
+		assertEquals(failedMessage.getAccountSid(), tree.get("accountSid").asString(),
+				"Property names should be camelCase: " + json);
+		assertTrue(tree.get("dateCreated").isNumber(),
+				"Dates should be numeric timestamps, but was: " + tree.get("dateCreated"));
+		assertEquals(failedMessage.getDateCreated().toEpochSecond(), tree.get("dateCreated").asLong(),
+				"Date timestamps should be in epoch seconds");
+		assertTrue(tree.get("from").isObject(),
+				"From number should be an object, but was: " + tree.get("from"));
+		assertEquals(failedMessage.getFrom().getEndpoint(), tree.get("from").get("endpoint").asString(),
+				"From number object should contain the phone number in the endpoint field");
+		assertEquals(failedMessage.getTo(), tree.get("to").asString(), "To number should be a string");
+		assertEquals(failedMessage.getErrorCode().intValue(), tree.get("errorCode").asInt(),
+				"Error code should be a number");
+		assertTrue(tree.get("price").isNull(), "Null values should be written as JSON null: " + json);
 	}
 
 	@Test
