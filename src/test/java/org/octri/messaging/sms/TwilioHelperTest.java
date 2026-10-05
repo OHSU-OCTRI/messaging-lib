@@ -139,11 +139,10 @@ public class TwilioHelperTest {
 	/**
 	 * Documents the format of the JSON produced by the helper, which library consumers receive as the API response
 	 * returned by {@link TwilioSmsDeliveryStrategy}.
-	 * <p>
+	 * 
 	 * Dates are numeric timestamps because Jackson 2 enables SerializationFeature.WRITE_DATES_AS_TIMESTAMPS by
 	 * default. Jackson 3 disables it and writes ISO-8601 strings instead, so this test is expected to fail when the
-	 * helper moves to Jackson 3. Phone numbers are objects with an endpoint field, which is why
-	 * {@link TwilioPhoneNumberDeserializer} exists.
+	 * helper moves to Jackson 3.
 	 */
 	@Test
 	public void testSerializedJsonFormat() throws Exception {
