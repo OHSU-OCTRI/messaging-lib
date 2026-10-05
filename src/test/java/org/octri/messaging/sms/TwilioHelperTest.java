@@ -137,19 +137,27 @@ public class TwilioHelperTest {
 	}
 
 	/**
-	 * Jackson 2 writes dates as numeric timestamps by default (SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).
-	 * Jackson 3 disables this by default and writes ISO-8601 strings instead, which changes the JSON returned to
-	 * library consumers by {@link TwilioSmsDeliveryStrategy}.
+	 * Documents the format of the JSON produced by the helper, which library consumers receive as the API response
+	 * returned by {@link TwilioSmsDeliveryStrategy}.
+	 * <p>
+	 * Dates are numeric timestamps because Jackson 2 enables SerializationFeature.WRITE_DATES_AS_TIMESTAMPS by
+	 * default. Jackson 3 disables it and writes ISO-8601 strings instead, so this test is expected to fail when the
+	 * helper moves to Jackson 3. Phone numbers are objects with an endpoint field, which is why
+	 * {@link TwilioPhoneNumberDeserializer} exists.
 	 */
 	@Test
-	public void testSerializedDatesAreNumericTimestamps() throws Exception {
-		var json = twilioHelper.serializeMessageToJson(queuedMessage);
-		var tree = new ObjectMapper().readTree(json);
+	public void testSerializedJsonFormat() throws Exception {
+		var json = twilioHelper.serializeMessageToJson(failedMessage);
+		var tree = JsonMapper.builder().build().readTree(json);
+
+		assertNotNull(tree.get("accountSid"), "Property names should be camelCase: " + json);
+		assertEquals(failedMessage.getAccountSid(), tree.get("accountSid").asString(),
+				"Account SID should be a string");
 
 		var expectedDates = Map.of(
-				"dateCreated", queuedMessage.getDateCreated(),
-				"dateSent", queuedMessage.getDateSent(),
-				"dateUpdated", queuedMessage.getDateUpdated());
+				"dateCreated", failedMessage.getDateCreated(),
+				"dateSent", failedMessage.getDateSent(),
+				"dateUpdated", failedMessage.getDateUpdated());
 
 		expectedDates.forEach((fieldName, expectedDate) -> {
 			var dateNode = tree.get(fieldName);
@@ -159,39 +167,8 @@ public class TwilioHelperTest {
 			assertEquals(expectedDate.toEpochSecond(), dateNode.asLong(),
 					fieldName + " timestamp should be in epoch seconds");
 		});
-	}
 
-	/**
-	 * {@link TwilioPhoneNumberDeserializer} exists because Twilio {@link PhoneNumber} objects are serialized as
-	 * objects with an endpoint field. If serialization of phone numbers changes, the deserializer may need to change.
-	 */
-	@Test
-	public void testSerializedPhoneNumberIsEndpointObject() throws Exception {
-		var json = twilioHelper.serializeMessageToJson(queuedMessage);
-		var fromNode = new ObjectMapper().readTree(json).get("from");
-
-		assertNotNull(fromNode, "Serialized JSON should include the from number: " + json);
-		assertTrue(fromNode.isObject(), "From number should be serialized as an object, but was: " + fromNode);
-		assertEquals(queuedMessage.getFrom().getEndpoint(), fromNode.get("endpoint").asText(),
-				"From number object should contain the phone number in the endpoint field");
-	}
-
-	/**
-	 * Spring Boot 4 applications read JSON with Jackson 3. This documents the format they will see when reading the
-	 * JSON produced by the helper's Jackson 2 object mapper (e.g. the API response returned by
-	 * {@link TwilioSmsDeliveryStrategy}).
-	 */
-	@Test
-	public void testSerializedJsonFormatAsReadByJackson3() throws Exception {
-		var json = twilioHelper.serializeMessageToJson(failedMessage);
-		var tree = JsonMapper.builder().build().readTree(json);
-
-		assertEquals(failedMessage.getAccountSid(), tree.get("accountSid").asString(),
-				"Property names should be camelCase: " + json);
-		assertTrue(tree.get("dateCreated").isNumber(),
-				"Dates should be numeric timestamps, but was: " + tree.get("dateCreated"));
-		assertEquals(failedMessage.getDateCreated().toEpochSecond(), tree.get("dateCreated").asLong(),
-				"Date timestamps should be in epoch seconds");
+		assertNotNull(tree.get("from"), "Serialized JSON should include the from number: " + json);
 		assertTrue(tree.get("from").isObject(),
 				"From number should be an object, but was: " + tree.get("from"));
 		assertEquals(failedMessage.getFrom().getEndpoint(), tree.get("from").get("endpoint").asString(),

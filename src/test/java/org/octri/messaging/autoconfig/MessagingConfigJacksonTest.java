@@ -2,7 +2,6 @@ package org.octri.messaging.autoconfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 
@@ -89,21 +87,6 @@ public class MessagingConfigJacksonTest {
 			assertFalse(helperJson.contains("account_sid"),
 					"Snake case property names indicate that TwilioHelper is resolving Spring's JsonMapper: "
 							+ helperJson);
-		});
-	}
-
-	/**
-	 * Test uses the default behavior of Jackson 2 (serialization of datetimes as numeric Unix time) to verify that
-	 * TwilioHelper correctly resolves ObjectMapper to Jackson 2.
-	 */
-	@Test
-	public void testTwilioHelperSerializesDatesAsNumeric() {
-		contextRunner.run(context -> {
-			var helperJson = context.getBean(TwilioHelper.class).serializeMessageToJson(queuedMessage);
-			var tree = new ObjectMapper().readTree(helperJson);
-			assertNotNull(tree.get("dateCreated"), "Twilio helper JSON should include dateCreated: " + helperJson);
-			assertTrue(tree.get("dateCreated").isNumber(),
-					"Twilio helper JSON should use numeric timestamps: " + helperJson);
 		});
 	}
 }
