@@ -3,7 +3,7 @@
 	<groupId>org.octri.messaging</groupId>
 	<artifactId>messaging_lib</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>messaging_lib</name>
 	<description>OCTRI Messaging Library</description>
 	<url>https://github.com/OHSU-OCTRI/messaging-lib</url>
