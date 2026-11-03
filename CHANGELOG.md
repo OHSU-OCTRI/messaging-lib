@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-03
+
 ### Dependencies
 
 - Upgrades from Java 17 to Java 21 (CIS-3899)
@@ -72,7 +74,8 @@ Initial release of code extracted from OPEN.
 - Add initial implementation extracted from OPEN. (CIS-3204)
 - Add Spring Boot auto-configuration. (CIS-3204)
 
-[unreleased]: https://github.com/OHSU-OCTRI/messaging-lib/compare/v0.2.5...HEAD
+[unreleased]: https://github.com/OHSU-OCTRI/messaging-lib/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/OHSU-OCTRI/messaging-lib/compare/v0.2.5...v1.0.0
 [0.2.5]: https://github.com/OHSU-OCTRI/messaging-lib/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/OHSU-OCTRI/messaging-lib/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/OHSU-OCTRI/messaging-lib/compare/v0.2.2...v0.2.3
