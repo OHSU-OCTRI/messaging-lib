@@ -9,9 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependencies
 
-- Bumps central-publishing-maven-plugin from 0.10.0 to 0.11.0 (CIS-3889)
-- Bumps spring-boot-starter-parent from 3.5.16 to 4.0.8 (CIS-3899)
 - Upgrades from Java 17 to Java 21 (CIS-3899)
+- Upgrades from Spring Boot 3 to Spring Boot 4 (CIS-3899)
+
+## [0.2.5] - 2026-10-14
+
+### Fixed
+
+- Fix release workflow by bumping central-publishing-maven-plugin from 0.11.0 to 0.12.0 (CIS-3915)
+
+## [0.2.4] - 2026-10-13
+
+**Do not use this version**
+
+> 0.2.4 Release not published due to automation error
+
+### Dependencies
+
+- Bumps central-publishing-maven-plugin from 0.10.0 to 0.11.0 (CIS-3889)
 
 ## [0.2.3] - 2026-07-16
 
