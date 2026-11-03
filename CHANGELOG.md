@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dependencies
+
+- Upgrades from Java 17 to Java 21 (CIS-3899)
+- Upgrades from Spring Boot 3 to Spring Boot 4 (CIS-3899)
+
 ## [0.2.5] - 2026-10-14
 
 ### Fixed
@@ -18,10 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Do not use this version**
 
 > 0.2.4 Release not published due to automation error
-
-### Changed
-
-- Add Spring Boot 4 branch to branches that publish artifacts (CIS-3899)
 
 ### Dependencies
 

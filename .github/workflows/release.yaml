@@ -19,5 +19,5 @@ jobs:
     with:
       version: ${{ inputs.version }}
       development_version: ${{ inputs.development_version }}
-      java_version: '17'
+      java_version: '21'
     secrets: inherit

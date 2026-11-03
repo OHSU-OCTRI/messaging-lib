@@ -2,6 +2,8 @@ package org.octri.messaging.sms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,6 +15,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +35,8 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.rest.api.v2010.account.MessageFetcher;
 import com.twilio.type.PhoneNumber;
+
+import tools.jackson.databind.json.JsonMapper;
 
 public class TwilioHelperTest {
 
@@ -115,6 +121,88 @@ public class TwilioHelperTest {
 	}
 
 	@Test
+	public void testLoadMessageFromTwilioApiJson() throws Exception {
+		mockMessage.when(() -> Message.fromJson(anyString(), any(ObjectMapper.class))).thenCallRealMethod();
+		var msg = twilioHelper.loadMessageFromString(TwilioTestUtils.getJsonText("failed.json"));
+
+		assertEquals(new PhoneNumber("+15557122661"), msg.getFrom(),
+				"Phone number strings should be deserialized by the custom phone number deserializer");
+		assertEquals("+15558675310", msg.getTo(), "To number should be deserialized");
+		assertEquals(Message.Status.FAILED, msg.getStatus(), "Status should be deserialized");
+		assertEquals(Integer.valueOf(10001), msg.getErrorCode(), "Error code should be deserialized");
+		assertEquals("Account is not active", msg.getErrorMessage(), "Error message should be deserialized");
+		assertNull(msg.getPrice(), "Explicit null values should be deserialized as null");
+		assertEquals(Instant.parse("2023-08-24T05:01:45Z"), msg.getDateCreated().toInstant(),
+				"Dates should be deserialized");
+	}
+
+	/**
+	 * Documents the format of the JSON produced by the helper, which library consumers receive as the API response
+	 * returned by {@link TwilioSmsDeliveryStrategy}.
+	 * 
+	 * Dates are numeric timestamps because Jackson 2 enables SerializationFeature.WRITE_DATES_AS_TIMESTAMPS by
+	 * default. Jackson 3 disables it and writes ISO-8601 strings instead, so this test is expected to fail when the
+	 * helper moves to Jackson 3.
+	 */
+	@Test
+	public void testSerializedJsonFormat() throws Exception {
+		var json = twilioHelper.serializeMessageToJson(failedMessage);
+		var tree = JsonMapper.builder().build().readTree(json);
+
+		assertNotNull(tree.get("accountSid"), "Property names should be camelCase: " + json);
+		assertEquals(failedMessage.getAccountSid(), tree.get("accountSid").asString(),
+				"Account SID should be a string");
+
+		var expectedDates = Map.of(
+				"dateCreated", failedMessage.getDateCreated(),
+				"dateSent", failedMessage.getDateSent(),
+				"dateUpdated", failedMessage.getDateUpdated());
+
+		expectedDates.forEach((fieldName, expectedDate) -> {
+			var dateNode = tree.get(fieldName);
+			assertNotNull(dateNode, "Serialized JSON should include " + fieldName + ": " + json);
+			assertTrue(dateNode.isNumber(),
+					fieldName + " should be serialized as a numeric timestamp, but was: " + dateNode);
+			assertEquals(expectedDate.toEpochSecond(), dateNode.asLong(),
+					fieldName + " timestamp should be in epoch seconds");
+		});
+
+		assertNotNull(tree.get("from"), "Serialized JSON should include the from number: " + json);
+		assertTrue(tree.get("from").isObject(),
+				"From number should be an object, but was: " + tree.get("from"));
+		assertEquals(failedMessage.getFrom().getEndpoint(), tree.get("from").get("endpoint").asString(),
+				"From number object should contain the phone number in the endpoint field");
+		assertEquals(failedMessage.getTo(), tree.get("to").asString(), "To number should be a string");
+		assertEquals(failedMessage.getErrorCode().intValue(), tree.get("errorCode").asInt(),
+				"Error code should be a number");
+		assertTrue(tree.get("price").isNull(), "Null values should be written as JSON null: " + json);
+	}
+
+	@Test
+	public void testSerializationRoundTripPreservesFieldValues() throws Exception {
+		mockMessage.when(() -> Message.fromJson(anyString(), any(ObjectMapper.class))).thenCallRealMethod();
+		var json = twilioHelper.serializeMessageToJson(failedMessage);
+		var msg = twilioHelper.loadMessageFromString(json);
+
+		assertEquals(failedMessage.getBody(), msg.getBody(), "Round trip should preserve the body");
+		assertEquals(failedMessage.getNumSegments(), msg.getNumSegments(),
+				"Round trip should preserve the number of segments");
+		assertEquals(failedMessage.getErrorCode(), msg.getErrorCode(), "Round trip should preserve the error code");
+		assertEquals(failedMessage.getErrorMessage(), msg.getErrorMessage(),
+				"Round trip should preserve the error message");
+		assertEquals(failedMessage.getPrice(), msg.getPrice(), "Round trip should preserve null values");
+		assertNotNull(msg.getDateCreated(), "Round trip should preserve the date created: " + json);
+		assertEquals(failedMessage.getDateCreated().toInstant(), msg.getDateCreated().toInstant(),
+				"Round trip should preserve the date created");
+		assertNotNull(msg.getDateSent(), "Round trip should preserve the date sent: " + json);
+		assertEquals(failedMessage.getDateSent().toInstant(), msg.getDateSent().toInstant(),
+				"Round trip should preserve the date sent");
+		assertNotNull(msg.getDateUpdated(), "Round trip should preserve the date updated: " + json);
+		assertEquals(failedMessage.getDateUpdated().toInstant(), msg.getDateUpdated().toInstant(),
+				"Round trip should preserve the date updated");
+	}
+
+	@Test
 	public void testSendMessageConvertsPhoneNumbers() {
 		var expectedFromNumber = new PhoneNumber("+15035551234");
 		var expectedToNumber = new PhoneNumber("+15035556789");
@@ -145,7 +233,7 @@ public class TwilioHelperTest {
 
 		verify(mockMessageCreator,
 				description("setStatusCallback should be called when the helper's callback URL is set"))
-				.setStatusCallback(MOCK_CALLBACK_URL);
+						.setStatusCallback(MOCK_CALLBACK_URL);
 	}
 
 	@Test
@@ -160,7 +248,7 @@ public class TwilioHelperTest {
 
 		verify(mockMessageCreator,
 				times(0).description("setStatusCallback should not be called when the helper's callback URL is null"))
-				.setStatusCallback(anyString());
+						.setStatusCallback(anyString());
 	}
 
 	@Test
@@ -175,7 +263,7 @@ public class TwilioHelperTest {
 
 		verify(mockMessageCreator,
 				times(0).description("setStatusCallback should not be called when the helper's callback URL is blank"))
-				.setStatusCallback(anyString());
+						.setStatusCallback(anyString());
 	}
 
 	@Test

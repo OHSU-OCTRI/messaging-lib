@@ -23,6 +23,7 @@ import org.octri.messaging.exception.UnsuccessfulDeliveryException;
 import org.octri.test.messaging.TwilioTestUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
@@ -141,6 +142,42 @@ public class TwilioSmsDeliveryStrategyTest {
 		}, "Delivery is unsuccessful");
 		assertTrue(thrown.getErrorResponse().contains(failedMessage.getAccountSid()),
 				"API response should be included in error");
+	}
+
+	/**
+	 * Jackson 3 replaces the checked {@link JsonProcessingException} with the unchecked JacksonException. These tests
+	 * verify that serialization failures still fall back to the message's string representation.
+	 */
+	@Test
+	public void testFallsBackToStringWhenSerializationFails() throws JsonProcessingException {
+		when(mockTwilioHelper.sendMessage(any(PhoneNumber.class), any(PhoneNumber.class), anyString()))
+				.thenReturn(queuedMessage);
+		when(mockTwilioHelper.isSuccessResponse(queuedMessage)).thenReturn(true);
+		when(mockTwilioHelper.serializeMessageToJson(queuedMessage))
+				.thenThrow(new JsonMappingException(null, "BORK"));
+
+		var result = strategy.sendSms(FROM_NUMBER, TO_NUMBER, MESSAGE_TEXT);
+
+		assertTrue(result.isPresent(), "Delivery should succeed even if the response cannot be serialized");
+		assertEquals(queuedMessage.toString(), result.get(),
+				"The message's string representation should be returned when serialization fails");
+	}
+
+	@Test
+	public void testErrorResponseFallsBackToStringWhenSerializationFails() throws JsonProcessingException {
+		when(mockTwilioHelper.sendMessage(any(PhoneNumber.class), any(PhoneNumber.class), anyString()))
+				.thenReturn(failedMessage);
+		when(mockTwilioHelper.isSuccessResponse(failedMessage)).thenReturn(false);
+		when(mockTwilioHelper.serializeMessageToJson(failedMessage))
+				.thenThrow(new JsonMappingException(null, "BORK"));
+
+		var thrown = assertThrows(UnsuccessfulDeliveryException.class, () -> {
+			strategy.sendSms(FROM_NUMBER, TO_NUMBER, MESSAGE_TEXT);
+		}, "Delivery is unsuccessful");
+		assertEquals("Twilio delivery failed.", thrown.getMessage(),
+				"The exception should report the delivery failure, not the serialization failure");
+		assertEquals(failedMessage.toString(), thrown.getErrorResponse(),
+				"The message's string representation should be included in the error when serialization fails");
 	}
 
 	@Test
