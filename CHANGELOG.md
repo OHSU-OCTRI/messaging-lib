@@ -7,14 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Add Spring Boot 4 branch to branches that publish artifacts (CIS-3899)
-
 ### Dependencies
 
 - Bumps central-publishing-maven-plugin from 0.10.0 to 0.11.0 (CIS-3889)
 - Bumps spring-boot-starter-parent from 3.5.16 to 4.0.8 (CIS-3899)
+- Upgrades from Java 17 to Java 21 (CIS-3899)
 
 ## [0.2.3] - 2026-07-16
 
