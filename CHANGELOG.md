@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Exception handling for Twilio `ApiException` to provide more context in error message
+
 ## [1.0.0] - 2026-11-03
 
 ### Dependencies

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
@@ -44,8 +45,14 @@ public class TwilioSmsDeliveryStrategy implements SmsDeliveryStrategy {
 			throw ude;
 		} catch (InvalidPhoneNumberException ipne) {
 			throw new UnsuccessfulDeliveryException("Failed to convert phone number to E.164 format.", ipne);
+		} catch (ApiException ae) {
+			var errorMsg = String.format("Twilio API error delivering SMS (code: %s, HTTP status: %s): %s",
+					ae.getCode(), ae.getStatusCode(), ae.getMessage());
+			log.error(errorMsg, ae);
+			throw new UnsuccessfulDeliveryException(errorMsg, ae);
 		} catch (Exception e) {
-			var errorMsg = "Unexpected exception delivering SMS: " + e.getClass().getCanonicalName();
+			var errorMsg = String.format("Unexpected exception delivering SMS (%s): %s",
+					e.getClass().getCanonicalName(), e.getMessage());
 			log.error(errorMsg, e);
 			throw new UnsuccessfulDeliveryException(errorMsg, e);
 		}
